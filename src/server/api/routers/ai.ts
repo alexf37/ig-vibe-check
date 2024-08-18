@@ -1,13 +1,47 @@
 import { z } from "zod";
 
+import { openai } from "@ai-sdk/openai";
+import { generateText } from "ai";
+
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 export const aiRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
+  analyse: publicProcedure
+    .input(
+      z.array(
+        z.object({
+          name: z.string(),
+          base64: z.string(),
+        }),
+      ),
+    )
+    .mutation(async ({ input }) => {
+      const fileBuffersWithMeta = await Promise.all(
+        input.map((serializedFile) => {
+          const base64 = serializedFile.base64.split(",")[1] ?? "";
+          return {
+            name: serializedFile.name,
+            buffer: Buffer.from(base64, "base64"),
+          };
+        }),
+      );
+
+      // do ai stuff
+      const result = await generateText({
+        model: openai("gpt-4o-mini"),
+        system:
+          "Analyze and judge the instagram profile shown in the following screenshots. Include at the end of your response a score between 0 and 100 where 0 is not good and 100 is perfect. Be mean, rude, and harsh in your response. Also, categorize the profile into a niche micro-genre as well.",
+        messages: [
+          {
+            role: "user",
+            content: fileBuffersWithMeta.map((buffer) => ({
+              type: "image" as const,
+              image: buffer.buffer,
+            })),
+          },
+        ],
+      });
+
+      return result.text;
     }),
 });
