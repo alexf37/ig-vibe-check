@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { openai } from "@ai-sdk/openai";
-import { generateText } from "ai";
+import { generateObject, generateText } from "ai";
 
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
@@ -27,7 +27,7 @@ export const aiRouter = createTRPCRouter({
       );
 
       // do ai stuff
-      const result = await generateText({
+      const result = await generateObject({
         model: openai("gpt-4o-mini"),
         system:
           "Analyze and judge the instagram profile shown in the following screenshots. Include at the end of your response a score between 0 and 100 where 0 is not good and 100 is perfect. Be mean, rude, and harsh in your response. Also, categorize the profile into a niche micro-genre as well. Phrase it like you are talking to the instagram profile owner. This whole thing should be more like a roast, not a review or critique. Be crude, be funny, and tease.",
@@ -40,8 +40,16 @@ export const aiRouter = createTRPCRouter({
             })),
           },
         ],
+        schema: z.object({
+          letterGrade: z.string(),
+          overallScoreOutOf100: z.number(),
+          followerToFollowingRatingOutOf10: z.number(),
+          microGenre: z.string(),
+          fullAnalysisText: z.string(),
+          genreEmoji: z.string(),
+        }),
       });
 
-      return result.text;
+      return result.object;
     }),
 });

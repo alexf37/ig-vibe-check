@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { useCallback, useState } from "react";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { TrashIcon } from "@/components/icons/TrashIcon";
+import { type Analysis } from "./types";
 
 type SerializedFile = {
   name: string;
@@ -41,7 +42,7 @@ async function serializeFiles(files: File[]) {
 export function FileUploadForm({
   onSuccess,
 }: {
-  onSuccess: (response: string) => void;
+  onSuccess: (response: Analysis) => void;
 }) {
   const [files, setFiles] = useState<File[]>([]);
   const [encoding, setEncoding] = useState(false);
@@ -62,9 +63,6 @@ export function FileUploadForm({
 
   const uploadMutation = api.ai.analyse.useMutation({
     onSuccess(res) {
-      toast("Success!", {
-        description: "Done.",
-      });
       setFiles([]);
       onSuccess(res);
     },
@@ -101,7 +99,11 @@ export function FileUploadForm({
           "border-border cursor-pointer rounded-md border-2 border-dashed bg-white/10 p-4 transition-opacity hover:opacity-75 dark:border-slate-600",
         )}
       >
-        <input {...inputProps} />
+        <input
+          {...inputProps}
+          disabled={uploadMutation.isPending || encoding}
+          className="disabled:cursor-not-allowed disabled:opacity-50"
+        />
         <p className="text-muted-foreground text-sm">
           Drag and drop your screenshots or click to select them in your file
           explorer
