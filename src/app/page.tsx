@@ -26,8 +26,8 @@ export default function Home() {
                   {analysis.overallScoreOutOf100})
                 </li>
                 <li>
-                  👥 Follower to following rating:{" "}
-                  {analysis.followerToFollowingRatingOutOf10} (out of 10)
+                  👥 Follower to following:{" "}
+                  {analysis.followerToFollowingLetterGrade}
                 </li>
                 <li>
                   {analysis.genreEmoji} Genre: {analysis.microGenre}

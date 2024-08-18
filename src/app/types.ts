@@ -1,7 +1,7 @@
 export type Analysis = {
   letterGrade: string;
   overallScoreOutOf100: number;
-  followerToFollowingRatingOutOf10: number;
+  followerToFollowingLetterGrade: string;
   microGenre: string;
   fullAnalysisText: string;
   genreEmoji: string;

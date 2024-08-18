@@ -156,10 +156,10 @@ export function FileUploadForm({
                 {encoding || uploadMutation.isPending ? (
                   <>
                     <LoadingSpinner className="mr-2 h-4 w-4" />
-                    <span>Uploading...</span>
+                    <span>Analysing...</span>
                   </>
                 ) : (
-                  <span>Analyze my vibe</span>
+                  <span>Analyse my vibe</span>
                 )}
               </Button>
             </span>
