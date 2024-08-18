@@ -1,23 +1,26 @@
 import { z } from "zod";
 
 import { openai } from "@ai-sdk/openai";
-import { generateObject, generateText } from "ai";
+import { generateObject } from "ai";
 
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 export const aiRouter = createTRPCRouter({
   analyse: publicProcedure
     .input(
-      z.array(
-        z.object({
-          name: z.string(),
-          base64: z.string(),
-        }),
-      ),
+      z.object({
+        files: z.array(
+          z.object({
+            name: z.string(),
+            base64: z.string(),
+          }),
+        ),
+        temperature: z.number().optional(),
+      }),
     )
     .mutation(async ({ input }) => {
       const fileBuffersWithMeta = await Promise.all(
-        input.map((serializedFile) => {
+        input.files.map((serializedFile) => {
           const base64 = serializedFile.base64.split(",")[1] ?? "";
           return {
             name: serializedFile.name,
@@ -40,6 +43,7 @@ export const aiRouter = createTRPCRouter({
             })),
           },
         ],
+        temperature: input.temperature,
         schema: z.object({
           letterGrade: z.string(),
           overallScoreOutOf100: z.number(),

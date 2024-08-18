@@ -16,6 +16,7 @@ import { useCallback, useState } from "react";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { TrashIcon } from "@/components/icons/TrashIcon";
 import { type Analysis } from "./types";
+import { Slider } from "@/components/ui/slider";
 
 type SerializedFile = {
   name: string;
@@ -46,6 +47,7 @@ export function FileUploadForm({
 }) {
   const [files, setFiles] = useState<File[]>([]);
   const [encoding, setEncoding] = useState(false);
+  const [temperature, setTemperature] = useState(undefined);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -81,7 +83,10 @@ export function FileUploadForm({
     try {
       const serializedFiles = await serializeFiles(files);
       setEncoding(false);
-      uploadMutation.mutate(serializedFiles);
+      uploadMutation.mutate({
+        files: serializedFiles,
+        temperature,
+      });
     } catch {
       setEncoding(false);
       toast("Error", {
@@ -92,6 +97,17 @@ export function FileUploadForm({
 
   return (
     <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+      {/* <div className="mb-4 space-y-4">
+        <div>Spiciness: {(temperature * 100).toFixed(0)}%</div>
+        <Slider
+          className="cursor-grab"
+          value={[temperature]}
+          onValueChange={(val) => setTemperature(val[0] ?? 0.5)}
+          min={0}
+          max={1}
+          step={0.01}
+        />
+      </div> */}
       <div
         {...rootProps}
         className={twMerge(
