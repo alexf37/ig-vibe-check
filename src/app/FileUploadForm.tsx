@@ -98,18 +98,18 @@ export function FileUploadForm({
         {...rootProps}
         className={twMerge(
           rootProps.className,
-          "border-border bg-secondary cursor-pointer rounded-md border-2 border-dashed p-4 transition-opacity hover:opacity-75 dark:border-slate-600",
+          "border-border cursor-pointer rounded-md border-2 border-dashed bg-white/10 p-4 transition-opacity hover:opacity-75 dark:border-slate-600",
         )}
       >
         <input {...inputProps} />
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           Drag and drop your screenshots or click to select them in your file
           explorer
         </p>
       </div>
       {files.length > 0 && (
         <aside>
-          <div className="max-h-72 w-full overflow-x-hidden rounded-md border">
+          <div className="max-h-72 w-full overflow-x-hidden rounded-md border bg-white/10">
             <div className="p-4">
               <h4 className="mb-2 text-sm font-medium leading-none">Files</h4>
               {files.map((file: FileWithPath) => (
@@ -145,6 +145,8 @@ export function FileUploadForm({
           <TooltipTrigger asChild>
             <span className="w-fit">
               <Button
+                variant={"outline"}
+                className="text-primary"
                 disabled={
                   files.length === 0 || encoding || uploadMutation.isPending
                 }

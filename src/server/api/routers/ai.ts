@@ -30,7 +30,7 @@ export const aiRouter = createTRPCRouter({
       const result = await generateText({
         model: openai("gpt-4o-mini"),
         system:
-          "Analyze and judge the instagram profile shown in the following screenshots. Include at the end of your response a score between 0 and 100 where 0 is not good and 100 is perfect. Be mean, rude, and harsh in your response. Also, categorize the profile into a niche micro-genre as well.",
+          "Analyze and judge the instagram profile shown in the following screenshots. Include at the end of your response a score between 0 and 100 where 0 is not good and 100 is perfect. Be mean, rude, and harsh in your response. Also, categorize the profile into a niche micro-genre as well. Phrase it like you are talking to the instagram profile owner. This whole thing should be more like a roast, not a review or critique. Be crude, be funny, and tease.",
         messages: [
           {
             role: "user",
